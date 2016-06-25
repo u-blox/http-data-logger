@@ -19,6 +19,7 @@ import (
     "os"
     "net/http"
     "io/ioutil"
+    "time"
 )
 
 //--------------------------------------------------------------------
@@ -54,6 +55,8 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
         body, err := ioutil.ReadAll(request.Body)
         if err == nil {
             log.Printf("  > \"%s\".\n", body)
+            body = append ([]byte(time.Now().String() + ": "), body...) 
+            body = append (body, '\n')
             if (pFile != nil) {
                 _, err := pFile.Write(body);
                 if err != nil {
