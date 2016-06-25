@@ -36,7 +36,7 @@ var pFile *os.File = nil
 var httpPort uint64 = 0
 
 // Command-line flags
-var pHttpPort = flag.String ("p", "5055", "the port number to listen on for HTTP requests.");
+var pHttpPort = flag.String ("p", "80", "the port number to listen on for HTTP requests.");
 var pFileName = flag.String ("t", "httplog.txt", "the file name to append the body of received HTTP requests to.");
 var Usage = func() {
     fmt.Fprintf(os.Stderr, "\n%s: run the HTTP data logging server.  Usage:\n", os.Args[0])
