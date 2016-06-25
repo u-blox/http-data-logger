@@ -37,7 +37,7 @@ var httpPort uint64 = 0
 
 // Command-line flags
 var pHttpPort = flag.String ("p", "5055", "the port number to listen on for HTTP requests.");
-var pFileName = flag.String ("t", "grabbed.txt", "the file name to append the body of received HTTP requests to.");
+var pFileName = flag.String ("t", "httplog.txt", "the file name to append the body of received HTTP requests to.");
 var Usage = func() {
     fmt.Fprintf(os.Stderr, "\n%s: run the HTTP data logging server.  Usage:\n", os.Args[0])
         flag.PrintDefaults()
@@ -68,6 +68,9 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
 func main() {
     var err error
 
+    // Deal with the command-line parameters
+    flag.Parse()
+    
     // Set up logging
     log.SetFlags(log.LstdFlags)
     
@@ -77,7 +80,7 @@ func main() {
     if (err == nil) {        
         // Set up the HTTP server
         http.HandleFunc("/", homeHttpHandler)    
-        log.Printf("Listening for HTTP requests on port %s.\n", *pHttpPort)
+        log.Printf("Listening for HTTP requests on port %s and writing body of received requests to \"%s\".\n", *pHttpPort, *pFileName)
         // Listen forever
         http.ListenAndServe(":" + *pHttpPort, nil)
     } else {
