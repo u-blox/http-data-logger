@@ -50,7 +50,7 @@ var Usage = func() {
 // HTTP home page handler
 func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
     if (request.Method != "") {
-        log.Printf("  > received %s request to \"%s\" from \"%s\":\n", request.Method, request.URL, request.Host)
+        log.Printf("  > received %s request to \"%s\" from \"%s\":\n", request.Method, request.URL, request.RemoteAddr)
         body, err := ioutil.ReadAll(request.Body)
         if err == nil {
             log.Printf("  > \"%s\".\n", body)
@@ -66,7 +66,7 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
             writer.WriteHeader(http.StatusBadRequest)
         }
     } else {
-        log.Printf("!!> received unsupported REST request from \"%s\".\n", request.Host)
+        log.Printf("!!> received unsupported REST request to \"%s\" from \"%s\".\n", request.URL, request.RemoteAddr)
     }
 }
 
