@@ -30,7 +30,7 @@ import (
 //--------------------------------------------------------------------
 
 // File handle
-var pFile *os.File = nil
+var pFile *os.File
 
 // Port to listen to HTTP requests on
 var httpPort uint64 = 0
@@ -57,7 +57,7 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
             if (pFile != nil) {
                 _, err := pFile.Write(body);
                 if err != nil {
-                    log.Printf("!!> couldn't write to file \"%s\" (%s).\n", pFile.Name, err.Error())
+                    log.Printf("!!> couldn't write to file \"%s\" (%s).\n", pFile.Name(), err.Error())
                 }
             }
             writer.WriteHeader(http.StatusOK)
@@ -81,12 +81,12 @@ func main() {
     log.SetFlags(log.LstdFlags)
     
     // Open the output file for append
-    pFile, err = os.OpenFile(*pFileName, os.O_APPEND | os.O_CREATE, 0666)
+    pFile, err = os.OpenFile(*pFileName, os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0666)
     
     if (err == nil) {        
         // Set up the HTTP server
         http.HandleFunc("/", homeHttpHandler)    
-        log.Printf("Listening for HTTP requests on port %s and writing body of received requests to \"%s\".\n", *pHttpPort, *pFileName)
+        log.Printf("Listening for HTTP requests on port %s and writing body of received requests to \"%s\".\n", *pHttpPort, pFile.Name())
         // Listen forever
         http.ListenAndServe(":" + *pHttpPort, nil)
     } else {
