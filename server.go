@@ -54,6 +54,12 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
         body, err := ioutil.ReadAll(request.Body)
         if err == nil {
             log.Printf("  > \"%s\".\n", body)
+            if (pFile != nil) {
+                _, err := pFile.Write(body);
+                if err != nil {
+                    log.Printf("!!> couldn't write to file \"%s\" (%s).\n", pFile.Name, err.Error())
+                }
+            }
             writer.WriteHeader(http.StatusOK)
         } else {
             log.Printf("!!> couldn't read body from %s request (%s).\n", request.Method, err.Error())
