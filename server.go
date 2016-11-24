@@ -51,7 +51,7 @@ var Usage = func() {
 // HTTP home page handler
 func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
     if (request.Method != "") {
-        log.Printf("  > received %s request to \"%s\" from \"%s\":\n", request.Method, request.URL, request.RemoteAddr)
+        log.Printf("  > received %s request for \"%s\" from \"%s\":\n", request.Method, request.URL, request.RemoteAddr)
         body, err := ioutil.ReadAll(request.Body)
         if err == nil {
             log.Printf("  > \"%s\".\n", body)
@@ -59,17 +59,20 @@ func homeHttpHandler (writer http.ResponseWriter, request *http.Request) {
             body = append (body, '\n')
             if (pFile != nil) {
                 _, err := pFile.Write(body);
-                if err != nil {
+                if err == nil {
+                    // Make sure it gets written 'cos I'll want to read it out real-time
+                    pFile.Sync();
+                } else { 
                     log.Printf("!!> couldn't write to file \"%s\" (%s).\n", pFile.Name(), err.Error())
                 }
             }
             writer.WriteHeader(http.StatusOK)
         } else {
-            log.Printf("!!> couldn't read body from %s request (%s).\n", request.Method, err.Error())
+            log.Printf("!!> couldn't read body of %s request (%s).\n", request.Method, err.Error())
             writer.WriteHeader(http.StatusBadRequest)
         }
     } else {
-        log.Printf("!!> received unsupported REST request to \"%s\" from \"%s\".\n", request.URL, request.RemoteAddr)
+        log.Printf("!!> received unsupported REST request for \"%s\" from \"%s\".\n", request.URL, request.RemoteAddr)
     }
 }
 
